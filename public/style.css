@@ -6,22 +6,30 @@
 h1 {
   text-align: center;
 }
-p {
+#room {
   text-align: center;
-  margin-top: 10px;
+  /* margin-top: 10px; */
 }
 div p {
   float: left;
 }
-div p:first-child {
+
+#P1 {
   text-align: left;
   margin-left: 150px;
   color: blue;
 }
-div p:last-child {
+#P2 {
   text-align: right;
   margin-left: 850px;
   color: blue;
+}
+#status {
+  margin-top: 10px;
+  text-align: center;
+}
+#fine-player {
+  margin-left: 900px;
 }
 #board {
   width: 400px;

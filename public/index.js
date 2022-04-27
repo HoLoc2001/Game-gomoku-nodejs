@@ -1,8 +1,10 @@
 const socket = io("http://localhost:3000");
 const board = document.querySelector("#board");
 const roomId = document.querySelector("#room");
-const Player1 = document.querySelector("#P1");
-const Player2 = document.querySelector("#P2");
+const player1 = document.querySelector("#P1");
+const player2 = document.querySelector("#P2");
+const finePlayer = document.querySelector("#fine-player");
+const statusTurn = document.querySelector("#status");
 let isActive = true;
 let namePlayer = prompt("Nhập tên của bạn");
 console.log(namePlayer);
@@ -31,8 +33,15 @@ socket.on("connectToRoom", (data) => {
 });
 socket.emit("name", namePlayer);
 socket.on("show-name", (data) => {
-  Player1.textContent = data[0];
-  Player2.textContent = data[1];
+  player1.textContent = data[0];
+  player2.textContent = data[1];
+});
+socket.on("fine-player", (data) => {
+  finePlayer.textContent = data;
+  // finePlayer.style.display = data;
+});
+socket.on("status-turn", (data) => {
+  statusTurn.textContent = data;
 });
 socket.on("not-your-turn", () => {
   alert("Chưa đến lượt của bạn");
@@ -59,12 +68,12 @@ const a = (data) => {
 };
 
 socket.on("show", (data) => {
-  document.querySelector(`[id='${data.i}-${data.j}']`);
   // .addEventListener("click", () => {
   //   document.querySelector(`[id='${data.i}-${data.j}']`).style.cursor =
   //     "not-allowed";
   //   alert("Ô cờ đã được đánh");
   // });
+  document.querySelector(`[id='${data.i}-${data.j}']`);
   document.querySelector(
     `[id='${data.i}-${data.j}']`
   ).style.background = `no-repeat center/80% url(./img/${data.point}.png)`;
