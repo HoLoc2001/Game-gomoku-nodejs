@@ -1,0 +1,40 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+h1 {
+  text-align: center;
+}
+p {
+  text-align: center;
+  margin-top: 10px;
+}
+div p {
+  float: left;
+}
+div p:first-child {
+  text-align: left;
+  margin-left: 150px;
+  color: blue;
+}
+div p:last-child {
+  text-align: right;
+  margin-left: 850px;
+  color: blue;
+}
+#board {
+  width: 400px;
+  height: 400px;
+  background-color: #eee;
+  margin: 30px auto 0;
+}
+.square {
+  width: 40px;
+  height: 40px;
+  border: 0.1px solid black;
+  float: left;
+}
+.square:hover {
+  background-color: gray;
+}
