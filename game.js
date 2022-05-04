@@ -14,30 +14,25 @@ app.get("/", (req, res) => {
   res.sendFile(__dirname + "/public/game.html");
 });
 
-const checkPoints = function (arrBoard, a, b, X) {
+function checkPoints(arrBoard, a, b, X) {
   let points = 1,
-    a1 = a,
-    a2 = a,
+    a1 = a - 1,
+    a2 = a + 1,
     b1 = b,
     b2 = b;
-  // console.log(arrBoard);
-  // console.log(a);
-  // console.log(b);
-  // console.log(arrBoard[--a1][b]);
-  console.log(--a1 >= 0 && arrBoard[--a1][b] == X);
-  console.log(arrBoard[++a2][b]);
   for (let i = 0; i < 10; i++) {
-    if (--a1 >= 0 && arrBoard[--a1][b] == X) {
+    if (a1 >= 0 && arrBoard[a1][b1] === X) {
       a1--;
       points++;
     }
-    if (++a2 <= 9 && arrBoard[++a2][b] == X) {
+    if (a2 <= 9 && arrBoard[a2][b1] === X) {
       a2++;
       points++;
     }
   }
+
   return points;
-};
+}
 
 io.on("connection", (socket) => {
   socket.join(numRoom);
@@ -59,6 +54,8 @@ io.on("connection", (socket) => {
   // console.log(arrUser.length % 2 === 0);
   let arrSocket = [...socket.rooms];
   if (obRoom[numRoom].arrSocketId.length >= 2) {
+    io.sockets.in(numRoom).emit("status-turn", "Đến lượt của bạn");
+    socket.emit("status-turn", "Đến lượt của đối thủ");
     arrRoom.push(`room-${Number(arrRoom[arrRoom.length - 1].slice(-1)) + 1}`);
     numRoom = arrRoom[arrRoom.length - 1];
     io.sockets.in(arrSocket[1]).emit("fine-player", "");
@@ -80,7 +77,7 @@ io.on("connection", (socket) => {
         .emit("show", { i: data.i, j: data.j, point: "O" });
       io.sockets.in(data.room).emit("status-turn", "Đến lượt của bạn");
       socket.emit("status-turn", "Đến lượt của đối thủ");
-      // console.log(checkPoints(obRoom[data.room].arrBoard, data.i, data.j, 1));
+      console.log(checkPoints(obRoom[data.room].arrBoard, data.i, data.j, 1));
     } else if (
       obRoom[data.room].arrSocketId.indexOf(socket.id) === 1 &&
       obRoom[data.room].arrTurn[obRoom[data.room].arrTurn.length - 1] === 2 &&
@@ -108,9 +105,6 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    // obRoom[arrSocket[1]].arrBoard[9][0] = 7;
-    // console.log(obRoom[arrSocket[1]].arrBoard);
-    // console.log(arrSocket[1]);
     if (arrRoom.indexOf(arrSocket[1]) !== -1) {
       if (arrSocket[1] === arrRoom[arrRoom.length - 1]) {
         arrRoom.push(
