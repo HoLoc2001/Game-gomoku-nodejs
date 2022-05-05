@@ -20,18 +20,87 @@ function checkPoints(arrBoard, a, b, X) {
     a2 = a + 1,
     b1 = b,
     b2 = b;
+  // Chieu doc
   for (let i = 0; i < 10; i++) {
     if (a1 >= 0 && arrBoard[a1][b1] === X) {
+      points++;
       a1--;
-      points++;
     }
-    if (a2 <= 9 && arrBoard[a2][b1] === X) {
-      a2++;
+
+    if (a2 <= 9 && arrBoard[a2][b2] === X) {
       points++;
+      a2++;
+    }
+    if (points >= 5) {
+      return points + ` ${X} thang duong doc`;
+    }
+  }
+  // Chieu ngang
+  points = 1;
+  a1 = a;
+  a2 = a;
+  b1 = b - 1;
+  b2 = b + 1;
+  for (let i = 0; i < 10; i++) {
+    if (b1 >= 0 && arrBoard[a1][b1] === X) {
+      points++;
+      b1--;
+    }
+
+    if (b2 <= 9 && arrBoard[a2][b2] === X) {
+      points++;
+      b2++;
+    }
+    if (points >= 5) {
+      return points + ` ${X} thang duong ngang`;
+    }
+  }
+  // Chieu xeo len
+  points = 1;
+  a1 = a + 1;
+  a2 = a - 1;
+  b1 = b - 1;
+  b2 = b + 1;
+  for (let i = 0; i < 10; i++) {
+    if (a1 <= 9 && b1 >= 0 && arrBoard[a1][b1] === X) {
+      points++;
+      a1++;
+      b1--;
+    }
+
+    if (a2 >= 0 && b2 <= 9 && arrBoard[a2][b2] === X) {
+      points++;
+      a2--;
+      b2++;
+    }
+    if (points >= 5) {
+      return points + ` ${X} thang duong xeo len`;
+    }
+  }
+  // Chieu xeo xuong
+  points = 1;
+  a1 = a - 1;
+  a2 = a + 1;
+  b1 = b - 1;
+  b2 = b + 1;
+  for (let i = 0; i < 10; i++) {
+    if (a1 >= 0 && b1 >= 0 && arrBoard[a1][b1] === X) {
+      points++;
+      a1--;
+      b1--;
+    }
+
+    if (a2 <= 9 && b2 <= 9 && arrBoard[a2][b2] === X) {
+      points++;
+      a2++;
+      b2++;
+    }
+    if (points >= 5) {
+      return points + ` ${X} thang duong xeo xuong`;
     }
   }
 
-  return points;
+  // return "points" + "Ban da thang";
 }
 
 io.on("connection", (socket) => {
@@ -62,8 +131,6 @@ io.on("connection", (socket) => {
   } else {
     io.sockets.in(arrSocket[1]).emit("fine-player", "Đang tìm người chơi...");
   }
-  // obRoom[arrSocket[1]].arrBoard[1][2] = 2;
-  // console.log(obRoom[arrSocket[1]].arrBoard);
   socket.on("click", (data) => {
     if (
       obRoom[data.room].arrSocketId.indexOf(socket.id) === 0 &&
@@ -90,6 +157,7 @@ io.on("connection", (socket) => {
         .emit("show", { i: data.i, j: data.j, point: "X" });
       io.sockets.in(data.room).emit("status-turn", "Đến lượt của bạn");
       socket.emit("status-turn", "Đến lượt của đối thủ");
+      console.log(checkPoints(obRoom[data.room].arrBoard, data.i, data.j, 2));
     } else if (obRoom[data.room].arrSocketId.length === 2) {
       socket.emit("not-your-turn");
     }
