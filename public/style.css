@@ -28,14 +28,13 @@ div p {
   margin-top: 10px;
   text-align: center;
 }
-#fine-player {
-  margin-left: 900px;
-}
+
 #board {
   width: 400px;
   height: 400px;
   background-color: #eee;
   margin: 30px auto 0;
+  position: relative;
 }
 .square {
   width: 40px;
@@ -44,5 +43,30 @@ div p {
   float: left;
 }
 .square:hover {
-  background-color: gray;
+  background-color: darkgrey;
+  cursor: pointer;
+}
+
+.notify {
+  width: 600px;
+  height: 70px;
+  background-color: rgb(243, 212, 212);
+  border-radius: 20px;
+  position: absolute;
+  display: none;
+  top: 410px;
+  left: -100px;
+  animation: modalFadeIn ease 0.5s;
+}
+
+#notify_status {
+  float: left;
+  margin: 25px 50px;
+}
+#replay {
+  float: right;
+  margin: 25px 50px;
+}
+.open {
+  display: block;
 }

@@ -3,7 +3,8 @@ const board = document.querySelector("#board");
 const roomId = document.querySelector("#room");
 const player1 = document.querySelector("#p1");
 const player2 = document.querySelector("#p2");
-const finePlayer = document.querySelector("#fine-player");
+const notify = document.querySelector(".notify");
+const notify_status = document.querySelector("#notify_status");
 const statusTurn = document.querySelector("#status");
 let isActive = true;
 let namePlayer = prompt("Nhập tên của bạn");
@@ -34,26 +35,40 @@ socket.on("connectToRoom", (data) => {
 socket.emit("name", namePlayer);
 socket.on("show-name", (data) => {
   player1.textContent = data[0];
-  player2.textContent = data[1];
+  console.log(data[1]);
+  player2.textContent =
+    data[1] === undefined ? "Đang tìm đối thủ ..." : data[1];
 });
-socket.on("fine-player", (data) => {
-  finePlayer.textContent = data;
-  // finePlayer.style.display = data;
-});
+
 socket.on("status-turn", (data) => {
   statusTurn.textContent = data;
 });
 socket.on("not-your-turn", () => {
   alert("Chưa đến lượt của bạn");
 });
+socket.on("notify", (data) => {
+  notify.classList.add("open");
+  notify_status.textContent = data;
+});
+
+function click_board(i, j, room) {
+  if (
+    document
+      .querySelector(`[id='${i}-${j}']`)
+      .style.background.search("url") === -1
+  ) {
+    socket.emit("click", { i: i, j: j, room: room });
+  }
+  document
+    .querySelector(`[id='${i}-${j}']`)
+    .removeEventListener("click", click_board, false);
+}
 const a = (data) => {
-  var b = data;
-  console.log("copy" + b);
   for (let i = 0; i < 10; i++) {
     for (let j = 0; j < 10; j++) {
       document
         .querySelector(`[id='${i}-${j}']`)
-        .addEventListener("click", function a1() {
+        .addEventListener("click", function click_board() {
           if (
             document
               .querySelector(`[id='${i}-${j}']`)
@@ -61,18 +76,13 @@ const a = (data) => {
           ) {
             socket.emit("click", { i: i, j: j, room: data.room });
           }
-          this.removeEventListener("click", a1, false);
+          this.removeEventListener("click", click_board, false);
         });
     }
   }
 };
 
 socket.on("show", (data) => {
-  // .addEventListener("click", () => {
-  //   document.querySelector(`[id='${data.i}-${data.j}']`).style.cursor =
-  //     "not-allowed";
-  //   alert("Ô cờ đã được đánh");
-  // });
   document.querySelector(`[id='${data.i}-${data.j}']`);
   document.querySelector(
     `[id='${data.i}-${data.j}']`

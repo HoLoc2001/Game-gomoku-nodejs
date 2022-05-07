@@ -32,7 +32,7 @@ function checkPoints(arrBoard, a, b, X) {
       a2++;
     }
     if (points >= 5) {
-      return points + ` ${X} thang duong doc`;
+      return points;
     }
   }
   // Chieu ngang
@@ -52,7 +52,7 @@ function checkPoints(arrBoard, a, b, X) {
       b2++;
     }
     if (points >= 5) {
-      return points + ` ${X} thang duong ngang`;
+      return points;
     }
   }
   // Chieu xeo len
@@ -74,7 +74,7 @@ function checkPoints(arrBoard, a, b, X) {
       b2++;
     }
     if (points >= 5) {
-      return points + ` ${X} thang duong xeo len`;
+      return points;
     }
   }
   // Chieu xeo xuong
@@ -96,11 +96,11 @@ function checkPoints(arrBoard, a, b, X) {
       b2++;
     }
     if (points >= 5) {
-      return points + ` ${X} thang duong xeo xuong`;
+      return points;
     }
   }
 
-  // return "points" + "Ban da thang";
+  return points;
 }
 
 io.on("connection", (socket) => {
@@ -113,6 +113,7 @@ io.on("connection", (socket) => {
       arrBoard: Array(10)
         .fill(null)
         .map(() => Array(10).fill(0)),
+      statusGame: false,
     };
   }
   obRoom[numRoom].arrSocketId.push(socket.id);
@@ -128,14 +129,16 @@ io.on("connection", (socket) => {
     arrRoom.push(`room-${Number(arrRoom[arrRoom.length - 1].slice(-1)) + 1}`);
     numRoom = arrRoom[arrRoom.length - 1];
     io.sockets.in(arrSocket[1]).emit("fine-player", "");
-  } else {
-    io.sockets.in(arrSocket[1]).emit("fine-player", "Đang tìm người chơi...");
   }
+  // else {
+  //   io.sockets.in(arrSocket[1]).emit("fine-player", "Đang tìm người chơi...");
+  // }
   socket.on("click", (data) => {
     if (
       obRoom[data.room].arrSocketId.indexOf(socket.id) === 0 &&
       obRoom[data.room].arrTurn[obRoom[data.room].arrTurn.length - 1] === 1 &&
-      obRoom[data.room].arrSocketId.length === 2
+      obRoom[data.room].arrSocketId.length === 2 &&
+      obRoom[data.room].statusGame === false
     ) {
       obRoom[data.room].arrTurn.push(2);
       obRoom[data.room].arrBoard[data.i][data.j] = 1;
@@ -144,11 +147,17 @@ io.on("connection", (socket) => {
         .emit("show", { i: data.i, j: data.j, point: "O" });
       io.sockets.in(data.room).emit("status-turn", "Đến lượt của bạn");
       socket.emit("status-turn", "Đến lượt của đối thủ");
-      console.log(checkPoints(obRoom[data.room].arrBoard, data.i, data.j, 1));
+      if (checkPoints(obRoom[data.room].arrBoard, data.i, data.j, 1) >= 5) {
+        obRoom[data.room].statusGame = true;
+        io.sockets.in(data.room).emit("notify", "Bạn đã thua");
+        socket.emit("notify", "Bạn đã thắng");
+        io.sockets.in(data.room).emit("status-turn", "");
+      }
     } else if (
       obRoom[data.room].arrSocketId.indexOf(socket.id) === 1 &&
       obRoom[data.room].arrTurn[obRoom[data.room].arrTurn.length - 1] === 2 &&
-      obRoom[data.room].arrSocketId.length === 2
+      obRoom[data.room].arrSocketId.length === 2 &&
+      obRoom[data.room].statusGame === false
     ) {
       obRoom[data.room].arrTurn.push(1);
       obRoom[data.room].arrBoard[data.i][data.j] = 2;
@@ -157,12 +166,18 @@ io.on("connection", (socket) => {
         .emit("show", { i: data.i, j: data.j, point: "X" });
       io.sockets.in(data.room).emit("status-turn", "Đến lượt của bạn");
       socket.emit("status-turn", "Đến lượt của đối thủ");
-      console.log(checkPoints(obRoom[data.room].arrBoard, data.i, data.j, 2));
-    } else if (obRoom[data.room].arrSocketId.length === 2) {
+      if (checkPoints(obRoom[data.room].arrBoard, data.i, data.j, 2) >= 5) {
+        obRoom[data.room].statusGame = true;
+        io.sockets.in(data.room).emit("notify", "Bạn đã thua");
+        socket.emit("notify", "Bạn đã thắng");
+        io.sockets.in(data.room).emit("status-turn", "");
+      }
+    } else if (
+      obRoom[data.room].arrSocketId.length === 2 &&
+      obRoom[data.room].statusGame === false
+    ) {
       socket.emit("not-your-turn");
     }
-    // console.log(arrUser.indexOf(socket.id));
-    // console.log(arr[0]);
   });
   socket.on("name", (data) => {
     obRoom[arrSocket[1]].arrNamePlayer.push(data);
@@ -183,7 +198,7 @@ io.on("connection", (socket) => {
       arrRoom.splice(arrRoom.indexOf(arrSocket[1]), 1);
       delete obRoom[arrSocket[1]];
     }
-    io.sockets.in(arrSocket[1]).emit("exit", "Đối thủ đã thoát");
+    io.sockets.in(arrSocket[1]).emit("notify", "Đối thủ đã thoát");
   });
 });
 
