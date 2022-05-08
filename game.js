@@ -135,9 +135,9 @@ io.on("connection", (socket) => {
   // }
   socket.on("click", (data) => {
     if (
+      obRoom[data.room].arrSocketId.length === 2 &&
       obRoom[data.room].arrSocketId.indexOf(socket.id) === 0 &&
       obRoom[data.room].arrTurn[obRoom[data.room].arrTurn.length - 1] === 1 &&
-      obRoom[data.room].arrSocketId.length === 2 &&
       obRoom[data.room].statusGame === false
     ) {
       obRoom[data.room].arrTurn.push(2);
@@ -154,9 +154,9 @@ io.on("connection", (socket) => {
         io.sockets.in(data.room).emit("status-turn", "");
       }
     } else if (
+      obRoom[data.room].arrSocketId.length === 2 &&
       obRoom[data.room].arrSocketId.indexOf(socket.id) === 1 &&
       obRoom[data.room].arrTurn[obRoom[data.room].arrTurn.length - 1] === 2 &&
-      obRoom[data.room].arrSocketId.length === 2 &&
       obRoom[data.room].statusGame === false
     ) {
       obRoom[data.room].arrTurn.push(1);
@@ -188,6 +188,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
+    obRoom[arrSocket[1]].statusGame = true;
     if (arrRoom.indexOf(arrSocket[1]) !== -1) {
       if (arrSocket[1] === arrRoom[arrRoom.length - 1]) {
         arrRoom.push(
@@ -196,9 +197,12 @@ io.on("connection", (socket) => {
         numRoom = arrRoom[arrRoom.length - 1];
       }
       arrRoom.splice(arrRoom.indexOf(arrSocket[1]), 1);
+    }
+    if (obRoom[arrSocket[1]].arrSocketId.length <= 1) {
       delete obRoom[arrSocket[1]];
     }
     io.sockets.in(arrSocket[1]).emit("notify", "Đối thủ đã thoát");
+    io.sockets.in(arrSocket[1]).emit("status-turn", "");
   });
 });
 

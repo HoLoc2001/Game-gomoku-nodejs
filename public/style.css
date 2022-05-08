@@ -15,13 +15,12 @@ div p {
 }
 
 #p1 {
-  text-align: left;
   margin-left: 150px;
   color: blue;
 }
 #p2 {
-  text-align: right;
-  margin-left: 850px;
+  float: right;
+  margin-right: 150px;
   color: blue;
 }
 #status {
@@ -34,7 +33,6 @@ div p {
   height: 400px;
   background-color: #eee;
   margin: 30px auto 0;
-  position: relative;
 }
 .square {
   width: 40px;
@@ -52,10 +50,11 @@ div p {
   height: 70px;
   background-color: rgb(243, 212, 212);
   border-radius: 20px;
-  position: absolute;
+  position: relative;
   display: none;
-  top: 410px;
-  left: -100px;
+  left: 26%;
+  top: 10px;
+
   animation: modalFadeIn ease 0.5s;
 }
 

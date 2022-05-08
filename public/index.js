@@ -6,16 +6,23 @@ const player2 = document.querySelector("#p2");
 const notify = document.querySelector(".notify");
 const notify_status = document.querySelector("#notify_status");
 const statusTurn = document.querySelector("#status");
+const replay = document.querySelector("#replay");
 let isActive = true;
-let namePlayer = prompt("Nhập tên của bạn");
+
+let namePlayer;
+if (localStorage.getItem("name") === null) {
+  namePlayer = prompt("Nhập tên của bạn");
+} else {
+  namePlayer = localStorage.getItem("name");
+  localStorage.clear();
+}
+
 console.log(namePlayer);
 namePlayer =
   namePlayer === null || namePlayer === ""
     ? "PLAYER"
     : namePlayer.toUpperCase();
-console.log(namePlayer);
 
-console.log(namePlayer);
 for (let i = 0; i < 10; i++) {
   for (let j = 0; j < 10; j++) {
     const childBoard = document.createElement("div");
@@ -90,6 +97,18 @@ socket.on("show", (data) => {
   console.log(`${data.i}-${data.j}`);
 });
 
-socket.on("exit", (data) => {
-  document.write(data);
+replay.addEventListener("click", () => {
+  // while (board.firstChild) {
+  //   board.firstChild.remove();
+  // }
+  // for (let i = 0; i < 10; i++) {
+  //   for (let j = 0; j < 10; j++) {
+  //     const childBoard = document.createElement("div");
+  //     childBoard.classList.add("square");
+  //     childBoard.setAttribute("id", `${i}-${j}`);
+  //     board.appendChild(childBoard);
+  //   }
+  // }
+  localStorage.setItem("name", namePlayer);
+  location.reload();
 });
