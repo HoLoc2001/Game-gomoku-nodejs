@@ -1,4 +1,4 @@
-const socket = io("http://localhost:3000");
+const socket = io();
 const board = document.querySelector("#board");
 const roomId = document.querySelector("#room");
 const player1 = document.querySelector("#p1");
