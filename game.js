@@ -121,7 +121,6 @@ io.on("connection", (socket) => {
   io.sockets.in(numRoom).emit("connectToRoom", { room: numRoom });
   // console.log(numRoom);
 
-  // console.log(arrUser.length % 2 === 0);
   let arrSocket = [...socket.rooms];
   if (obRoom[numRoom].arrSocketId.length >= 2) {
     io.sockets.in(numRoom).emit("status-turn", "Đến lượt của bạn");
