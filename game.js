@@ -9,7 +9,8 @@ const PORT = process.env.PORT || 3000;
 
 let arrRoom = ["room-1"],
   obRoom = {},
-  numRoom = arrRoom[arrRoom.length - 1];
+  numRoom = arrRoom[arrRoom.length - 1],
+  boardLength = 15;
 
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/public/game.html");
@@ -22,13 +23,13 @@ function checkPoints(arrBoard, a, b, X) {
     b1 = b,
     b2 = b;
   // Chieu doc
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < boardLength; i++) {
     if (a1 >= 0 && arrBoard[a1][b1] === X) {
       points++;
       a1--;
     }
 
-    if (a2 <= 9 && arrBoard[a2][b2] === X) {
+    if (a2 <= 14 && arrBoard[a2][b2] === X) {
       points++;
       a2++;
     }
@@ -42,13 +43,13 @@ function checkPoints(arrBoard, a, b, X) {
   a2 = a;
   b1 = b - 1;
   b2 = b + 1;
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < boardLength; i++) {
     if (b1 >= 0 && arrBoard[a1][b1] === X) {
       points++;
       b1--;
     }
 
-    if (b2 <= 9 && arrBoard[a2][b2] === X) {
+    if (b2 <= 14 && arrBoard[a2][b2] === X) {
       points++;
       b2++;
     }
@@ -62,14 +63,14 @@ function checkPoints(arrBoard, a, b, X) {
   a2 = a - 1;
   b1 = b - 1;
   b2 = b + 1;
-  for (let i = 0; i < 10; i++) {
-    if (a1 <= 9 && b1 >= 0 && arrBoard[a1][b1] === X) {
+  for (let i = 0; i < boardLength; i++) {
+    if (a1 <= 14 && b1 >= 0 && arrBoard[a1][b1] === X) {
       points++;
       a1++;
       b1--;
     }
 
-    if (a2 >= 0 && b2 <= 9 && arrBoard[a2][b2] === X) {
+    if (a2 >= 0 && b2 <= 14 && arrBoard[a2][b2] === X) {
       points++;
       a2--;
       b2++;
@@ -84,14 +85,14 @@ function checkPoints(arrBoard, a, b, X) {
   a2 = a + 1;
   b1 = b - 1;
   b2 = b + 1;
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < boardLength; i++) {
     if (a1 >= 0 && b1 >= 0 && arrBoard[a1][b1] === X) {
       points++;
       a1--;
       b1--;
     }
 
-    if (a2 <= 9 && b2 <= 9 && arrBoard[a2][b2] === X) {
+    if (a2 <= 14 && b2 <= 14 && arrBoard[a2][b2] === X) {
       points++;
       a2++;
       b2++;
@@ -111,9 +112,9 @@ io.on("connection", (socket) => {
       arrSocketId: [],
       arrTurn: [1],
       arrNamePlayer: [],
-      arrBoard: Array(10)
+      arrBoard: Array(boardLength)
         .fill(null)
-        .map(() => Array(10).fill(0)),
+        .map(() => Array(boardLength).fill(0)),
       statusGame: false,
     };
   }

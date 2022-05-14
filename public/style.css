@@ -35,8 +35,8 @@ div p {
   margin: 30px auto 0;
 }
 .square {
-  width: 40px;
-  height: 40px;
+  width: calc(400px / 15);
+  height: calc(400px / 15);
   border: 0.1px solid black;
   float: left;
 }
@@ -53,7 +53,7 @@ div p {
   position: relative;
   display: none;
   left: 26%;
-  top: 10px;
+  top: 5px;
 
   animation: modalFadeIn ease 0.5s;
 }

@@ -7,6 +7,7 @@ const notify = document.querySelector(".notify");
 const notify_status = document.querySelector("#notify_status");
 const statusTurn = document.querySelector("#status");
 const replay = document.querySelector("#replay");
+let boardLength = 15;
 let isActive = true;
 
 let namePlayer;
@@ -23,8 +24,8 @@ namePlayer =
     ? "PLAYER"
     : namePlayer.toUpperCase();
 
-for (let i = 0; i < 10; i++) {
-  for (let j = 0; j < 10; j++) {
+for (let i = 0; i < boardLength; i++) {
+  for (let j = 0; j < boardLength; j++) {
     const childBoard = document.createElement("div");
     childBoard.classList.add("square");
     childBoard.setAttribute("id", `${i}-${j}`);
@@ -71,8 +72,8 @@ function click_board(i, j, room) {
     .removeEventListener("click", click_board, false);
 }
 const a = (data) => {
-  for (let i = 0; i < 10; i++) {
-    for (let j = 0; j < 10; j++) {
+  for (let i = 0; i < boardLength; i++) {
+    for (let j = 0; j < boardLength; j++) {
       document
         .querySelector(`[id='${i}-${j}']`)
         .addEventListener("click", function click_board() {
