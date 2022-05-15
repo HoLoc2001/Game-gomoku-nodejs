@@ -84,7 +84,7 @@ const a = (data) => {
           ) {
             socket.emit("click", { i: i, j: j, room: data.room });
           }
-          this.removeEventListener("click", click_board, false);
+          // this.removeEventListener("click", click_board, false);
         });
     }
   }

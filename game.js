@@ -1,6 +1,5 @@
 const express = require("express");
 const app = express();
-app.use(express.static("public"));
 const http = require("http");
 const server = http.createServer(app);
 const { Server } = require("socket.io");
@@ -11,6 +10,8 @@ let arrRoom = ["room-1"],
   obRoom = {},
   numRoom = arrRoom[arrRoom.length - 1],
   boardLength = 15;
+
+app.use(express.static("public"));
 
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/public/game.html");
@@ -29,7 +30,7 @@ function checkPoints(arrBoard, a, b, X) {
       a1--;
     }
 
-    if (a2 <= 14 && arrBoard[a2][b2] === X) {
+    if (a2 <= boardLength - 1 && arrBoard[a2][b2] === X) {
       points++;
       a2++;
     }
@@ -49,7 +50,7 @@ function checkPoints(arrBoard, a, b, X) {
       b1--;
     }
 
-    if (b2 <= 14 && arrBoard[a2][b2] === X) {
+    if (b2 <= boardLength - 1 && arrBoard[a2][b2] === X) {
       points++;
       b2++;
     }
@@ -64,13 +65,13 @@ function checkPoints(arrBoard, a, b, X) {
   b1 = b - 1;
   b2 = b + 1;
   for (let i = 0; i < boardLength; i++) {
-    if (a1 <= 14 && b1 >= 0 && arrBoard[a1][b1] === X) {
+    if (a1 <= boardLength - 1 && b1 >= 0 && arrBoard[a1][b1] === X) {
       points++;
       a1++;
       b1--;
     }
 
-    if (a2 >= 0 && b2 <= 14 && arrBoard[a2][b2] === X) {
+    if (a2 >= 0 && b2 <= boardLength - 1 && arrBoard[a2][b2] === X) {
       points++;
       a2--;
       b2++;
@@ -92,7 +93,11 @@ function checkPoints(arrBoard, a, b, X) {
       b1--;
     }
 
-    if (a2 <= 14 && b2 <= 14 && arrBoard[a2][b2] === X) {
+    if (
+      a2 <= boardLength - 1 &&
+      b2 <= boardLength - 1 &&
+      arrBoard[a2][b2] === X
+    ) {
       points++;
       a2++;
       b2++;
@@ -154,6 +159,12 @@ io.on("connection", (socket) => {
         socket.emit("notify", "Bạn đã thắng");
         io.sockets.in(data.room).emit("status-turn", "");
       }
+      if (obRoom[data.room].arrTurn.length - 1 === 150) {
+        console.log("a win");
+        obRoom[data.room].statusGame = true;
+        io.sockets.in(data.room).emit("notify", "Bạn đã hòa");
+        io.sockets.in(data.room).emit("status-turn", "");
+      }
     } else if (
       obRoom[data.room].arrSocketId.length === 2 &&
       obRoom[data.room].arrSocketId.indexOf(socket.id) === 1 &&
@@ -171,6 +182,12 @@ io.on("connection", (socket) => {
         obRoom[data.room].statusGame = true;
         io.sockets.in(data.room).emit("notify", "Bạn đã thua");
         socket.emit("notify", "Bạn đã thắng");
+        io.sockets.in(data.room).emit("status-turn", "");
+      }
+      if (obRoom[data.room].arrTurn.length - 1 === 150) {
+        console.log("a win");
+        obRoom[data.room].statusGame = true;
+        io.sockets.in(data.room).emit("notify", "Bạn đã hòa");
         io.sockets.in(data.room).emit("status-turn", "");
       }
     } else if (
