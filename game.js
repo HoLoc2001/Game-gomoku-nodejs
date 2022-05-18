@@ -159,7 +159,7 @@ io.on("connection", (socket) => {
         socket.emit("notify", "Bạn đã thắng");
         io.sockets.in(data.room).emit("status-turn", "");
       }
-      if (obRoom[data.room].arrTurn.length - 1 === 150) {
+      if (obRoom[data.room].arrTurn.length - 1 === boardLength * boardLength) {
         console.log("a win");
         obRoom[data.room].statusGame = true;
         io.sockets.in(data.room).emit("notify", "Bạn đã hòa");
@@ -184,7 +184,7 @@ io.on("connection", (socket) => {
         socket.emit("notify", "Bạn đã thắng");
         io.sockets.in(data.room).emit("status-turn", "");
       }
-      if (obRoom[data.room].arrTurn.length - 1 === 150) {
+      if (obRoom[data.room].arrTurn.length - 1 === boardLength * boardLength) {
         console.log("a win");
         obRoom[data.room].statusGame = true;
         io.sockets.in(data.room).emit("notify", "Bạn đã hòa");

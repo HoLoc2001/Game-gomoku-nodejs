@@ -37,7 +37,7 @@ div p {
 .square {
   width: calc(400px / 15);
   height: calc(400px / 15);
-  border: 0.1px solid black;
+  border: 0.01px solid black;
   float: left;
 }
 .square:hover {
