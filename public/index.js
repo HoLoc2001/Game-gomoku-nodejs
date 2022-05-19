@@ -11,11 +11,11 @@ let boardLength = 15;
 let isActive = true;
 
 let namePlayer;
-if (localStorage.getItem("name") === null) {
+if (sessionStorage.getItem("name") === null) {
   namePlayer = prompt("Nhập tên của bạn");
 } else {
-  namePlayer = localStorage.getItem("name");
-  localStorage.clear();
+  namePlayer = sessionStorage.getItem("name");
+  sessionStorage.clear();
 }
 
 console.log(namePlayer);
@@ -110,6 +110,6 @@ replay.addEventListener("click", () => {
   //     board.appendChild(childBoard);
   //   }
   // }
-  localStorage.setItem("name", namePlayer);
+  sessionStorage.setItem("name", namePlayer);
   location.reload();
 });
