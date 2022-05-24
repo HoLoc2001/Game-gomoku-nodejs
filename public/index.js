@@ -18,7 +18,6 @@ if (sessionStorage.getItem("name") === null) {
   sessionStorage.clear();
 }
 
-console.log(namePlayer);
 namePlayer =
   namePlayer === null || namePlayer === ""
     ? "PLAYER"
@@ -35,15 +34,23 @@ for (let i = 0; i < boardLength; i++) {
 
 socket.on("connectToRoom", (data) => {
   roomId.textContent = data.room;
-  if (isActive) {
-    a(data);
-    isActive = false;
+  for (let i = 0; i < boardLength; i++) {
+    for (let j = 0; j < boardLength; j++) {
+      document.querySelector(`[id='${i}-${j}']`).onclick = function () {
+        if (
+          document
+            .querySelector(`[id='${i}-${j}']`)
+            .style.background.search("url") === -1
+        ) {
+          socket.emit("click", { i: i, j: j, room: data.room });
+        }
+      };
+    }
   }
 });
 socket.emit("name", namePlayer);
 socket.on("show-name", (data) => {
   player1.textContent = data[0];
-  console.log(data[1]);
   player2.textContent =
     data[1] === undefined ? "Đang tìm đối thủ ..." : data[1];
 });
@@ -59,57 +66,14 @@ socket.on("notify", (data) => {
   notify_status.textContent = data;
 });
 
-function click_board(i, j, room) {
-  if (
-    document
-      .querySelector(`[id='${i}-${j}']`)
-      .style.background.search("url") === -1
-  ) {
-    socket.emit("click", { i: i, j: j, room: room });
-  }
-  document
-    .querySelector(`[id='${i}-${j}']`)
-    .removeEventListener("click", click_board, false);
-}
-const a = (data) => {
-  for (let i = 0; i < boardLength; i++) {
-    for (let j = 0; j < boardLength; j++) {
-      document
-        .querySelector(`[id='${i}-${j}']`)
-        .addEventListener("click", function click_board() {
-          if (
-            document
-              .querySelector(`[id='${i}-${j}']`)
-              .style.background.search("url") === -1
-          ) {
-            socket.emit("click", { i: i, j: j, room: data.room });
-          }
-          // this.removeEventListener("click", click_board, false);
-        });
-    }
-  }
-};
-
 socket.on("show", (data) => {
   document.querySelector(`[id='${data.i}-${data.j}']`);
   document.querySelector(
     `[id='${data.i}-${data.j}']`
   ).style.background = `no-repeat center/80% url(./img/${data.point}.png)`;
-  console.log(`${data.i}-${data.j}`);
 });
 
 replay.addEventListener("click", () => {
-  // while (board.firstChild) {
-  //   board.firstChild.remove();
-  // }
-  // for (let i = 0; i < 10; i++) {
-  //   for (let j = 0; j < 10; j++) {
-  //     const childBoard = document.createElement("div");
-  //     childBoard.classList.add("square");
-  //     childBoard.setAttribute("id", `${i}-${j}`);
-  //     board.appendChild(childBoard);
-  //   }
-  // }
   sessionStorage.setItem("name", namePlayer);
   location.reload();
 });

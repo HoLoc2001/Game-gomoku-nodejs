@@ -22,9 +22,10 @@ function checkPoints(arrBoard, a, b, X) {
     a1 = a - 1,
     a2 = a + 1,
     b1 = b,
-    b2 = b;
+    b2 = b,
+    length = 4;
   // Chieu doc
-  for (let i = 0; i < boardLength; i++) {
+  for (let i = 0; i < length; i++) {
     if (a1 >= 0 && arrBoard[a1][b1] === X) {
       points++;
       a1--;
@@ -44,7 +45,7 @@ function checkPoints(arrBoard, a, b, X) {
   a2 = a;
   b1 = b - 1;
   b2 = b + 1;
-  for (let i = 0; i < boardLength; i++) {
+  for (let i = 0; i < length; i++) {
     if (b1 >= 0 && arrBoard[a1][b1] === X) {
       points++;
       b1--;
@@ -64,7 +65,7 @@ function checkPoints(arrBoard, a, b, X) {
   a2 = a - 1;
   b1 = b - 1;
   b2 = b + 1;
-  for (let i = 0; i < boardLength; i++) {
+  for (let i = 0; i < length; i++) {
     if (a1 <= boardLength - 1 && b1 >= 0 && arrBoard[a1][b1] === X) {
       points++;
       a1++;
@@ -86,7 +87,7 @@ function checkPoints(arrBoard, a, b, X) {
   a2 = a + 1;
   b1 = b - 1;
   b2 = b + 1;
-  for (let i = 0; i < boardLength; i++) {
+  for (let i = 0; i < length; i++) {
     if (a1 >= 0 && b1 >= 0 && arrBoard[a1][b1] === X) {
       points++;
       a1--;
@@ -124,9 +125,8 @@ io.on("connection", (socket) => {
     };
   }
   obRoom[numRoom].arrSocketId.push(socket.id);
-  // console.log(obRoom);
+
   io.sockets.in(numRoom).emit("connectToRoom", { room: numRoom });
-  // console.log(numRoom);
 
   let arrSocket = [...socket.rooms];
   if (obRoom[numRoom].arrSocketId.length >= 2) {
@@ -136,9 +136,6 @@ io.on("connection", (socket) => {
     numRoom = arrRoom[arrRoom.length - 1];
     io.sockets.in(arrSocket[1]).emit("fine-player", "");
   }
-  // else {
-  //   io.sockets.in(arrSocket[1]).emit("fine-player", "Đang tìm người chơi...");
-  // }
   socket.on("click", (data) => {
     if (
       obRoom[data.room].arrSocketId.length === 2 &&
@@ -160,7 +157,6 @@ io.on("connection", (socket) => {
         io.sockets.in(data.room).emit("status-turn", "");
       }
       if (obRoom[data.room].arrTurn.length - 1 === boardLength * boardLength) {
-        console.log("a win");
         obRoom[data.room].statusGame = true;
         io.sockets.in(data.room).emit("notify", "Bạn đã hòa");
         io.sockets.in(data.room).emit("status-turn", "");
@@ -185,7 +181,6 @@ io.on("connection", (socket) => {
         io.sockets.in(data.room).emit("status-turn", "");
       }
       if (obRoom[data.room].arrTurn.length - 1 === boardLength * boardLength) {
-        console.log("a win");
         obRoom[data.room].statusGame = true;
         io.sockets.in(data.room).emit("notify", "Bạn đã hòa");
         io.sockets.in(data.room).emit("status-turn", "");
@@ -199,7 +194,6 @@ io.on("connection", (socket) => {
   });
   socket.on("name", (data) => {
     obRoom[arrSocket[1]].arrNamePlayer.push(data);
-    console.log(obRoom[arrSocket[1]].arrNamePlayer);
     io.sockets
       .in(arrSocket[1])
       .emit("show-name", obRoom[arrSocket[1]].arrNamePlayer);
