@@ -1,4 +1,4 @@
-web: https://game-gomoku-nodejs.herokuapp.com/
+web: https://game-gomoku.onrender.com/
 
 
 
